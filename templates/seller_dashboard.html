@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Seller Dashboard</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<nav class="navbar">
+
+    <div class="logo">
+        <a href="/">ShopEase Seller</a>
+    </div>
+
+    <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/seller_logout">Logout</a>
+    </div>
+
+</nav>
+
+<section class="products-section">
+
+    <h2>
+        Welcome Seller
+    </h2>
+
+    <div class="admin-grid">
+
+        <div class="order-card">
+            <h3>Total Products</h3>
+            <h1>{{ total_products }}</h1>
+        </div>
+
+        <div class="order-card">
+            <h3>Total Orders</h3>
+            <h1>{{ total_orders }}</h1>
+        </div>
+
+        <div class="order-card">
+            <h3>Total Revenue</h3>
+            <h1>₹{{ total_revenue }}</h1>
+        </div>
+
+    </div>
+
+    <h2 style="margin-top:30px;">
+        Your Products
+    </h2>
+
+    <div class="product-container">
+
+        {% for product in products %}
+
+        <div class="product-card">
+
+            <img src="{{ product.image }}">
+
+            <div class="product-details">
+
+                <h3>{{ product.product_name }}</h3>
+
+                <h2>₹{{ product.price }}</h2>
+
+                <p class="stock">
+                    Stock: {{ product.stock_quantity }}
+                </p>
+
+                <p class="rating">
+                    ⭐ {{ product.rating }}
+                </p>
+<h2 style="margin-top:30px;">Add New Product</h2>
+
+<form method="POST" action="/seller/add_product" class="auth-form admin-form">
+    <input type="text" name="product_name" placeholder="Product Name" required>
+
+    <input type="text" name="description" placeholder="Description" required>
+
+    <input type="number" name="price" placeholder="Price" required>
+
+    <input type="text" name="image" placeholder="Online Image URL" required>
+
+    <input type="number" name="discount" placeholder="Discount %" required>
+
+    <input type="number" name="stock_quantity" placeholder="Stock Quantity" required>
+
+    <select name="category_id" required>
+        <option value="">Select Category</option>
+        {% for category in categories %}
+            <option value="{{ category.category_id }}">
+                {{ category.category_name }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <button type="submit">Add Product</button>
+</form>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+</body>
+</html>

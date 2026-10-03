@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manage Orders</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<nav class="navbar">
+
+    <div class="logo">
+        <a href="/admin">ShopEase Admin</a>
+    </div>
+
+    <div class="nav-links">
+        <a href="/admin">Dashboard</a>
+        <a href="/admin/orders">Manage Orders</a>
+        <a href="/">Home</a>
+        <a href="/logout">Logout</a>
+    </div>
+
+</nav>
+
+<section class="products-section">
+
+    <h2>Manage Orders</h2>
+
+    {% if orders %}
+
+        {% for order in orders %}
+
+        <div class="order-card">
+
+            <h3>Order ID: {{ order.order_id }}</h3>
+
+            <p>
+                <b>User:</b>
+                {{ order.name }}
+            </p>
+
+            <p>
+                <b>Total:</b>
+                ₹{{ order.total_amount }}
+            </p>
+
+            <p>
+                <b>Current Status:</b>
+                {{ order.status }}
+            </p>
+
+            <p>
+                <b>Date:</b>
+                {{ order.order_date }}
+            </p>
+
+            <form method="POST"
+                  action="/admin/update_order/{{ order.order_id }}"
+                  class="status-form">
+
+                <select name="status" required>
+
+                    <option value="Placed"
+                    {% if order.status == "Placed" %}selected{% endif %}>
+                        Placed
+                    </option>
+
+                    <option value="Packed"
+                    {% if order.status == "Packed" %}selected{% endif %}>
+                        Packed
+                    </option>
+
+                    <option value="Shipped"
+                    {% if order.status == "Shipped" %}selected{% endif %}>
+                        Shipped
+                    </option>
+
+                    <option value="Out For Delivery"
+                    {% if order.status == "Out For Delivery" %}selected{% endif %}>
+                        Out For Delivery
+                    </option>
+
+                    <option value="Delivered"
+                    {% if order.status == "Delivered" %}selected{% endif %}>
+                        Delivered
+                    </option>
+
+                    <option value="Cancelled"
+                    {% if order.status == "Cancelled" %}selected{% endif %}>
+                        Cancelled
+                    </option>
+
+                </select>
+
+                <button type="submit" class="update-btn">
+                    Update Status
+                </button>
+
+            </form>
+
+        </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <h2>No Orders Found</h2>
+
+    {% endif %}
+
+</section>
+
+</body>
+</html>

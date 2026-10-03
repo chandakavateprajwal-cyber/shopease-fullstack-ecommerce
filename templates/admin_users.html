@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manage Users</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<nav class="navbar">
+
+    <div class="logo">
+        <a href="/admin">ShopEase Admin</a>
+    </div>
+
+    <div class="nav-links">
+        <a href="/admin">Dashboard</a>
+        <a href="/admin/users">Manage Users</a>
+        <a href="/">Home</a>
+        <a href="/logout">Logout</a>
+    </div>
+
+</nav>
+
+<section class="products-section">
+
+    <h2>
+        Manage Users
+    </h2>
+
+    <div class="order-card">
+
+        <table class="admin-table">
+
+            <tr>
+                <th>User ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Action</th>
+            </tr>
+
+            {% for user in users %}
+
+            <tr>
+
+                <td>
+                    {{ user.user_id }}
+                </td>
+
+                <td>
+                    {{ user.name }}
+                </td>
+
+                <td>
+                    {{ user.email }}
+                </td>
+
+                <td>
+                    <a href="/delete_user/{{ user.user_id }}">
+                        <button class="buy-btn">
+                            Delete
+                        </button>
+                    </a>
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+    </div>
+
+</section>
+
+</body>
+</html>

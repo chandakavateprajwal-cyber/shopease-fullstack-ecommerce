@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShopEase - Online Shopping</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="logo">
+        <a href="/">ShopEase</a>
+    </div>
+
+    <form action="/products" method="GET" class="search-box">
+        <input
+            type="text"
+            name="search"
+            id="searchInput"
+            autocomplete="off"
+            value="{{ search if search else '' }}"
+            placeholder="Search for products, brands and more"
+        >
+
+        <div id="suggestionsBox"></div>
+
+        <button type="submit">Search</button>
+    </form>
+
+    <div class="nav-links">
+        {% if session.get('name') %}
+            <span class="welcome-text">Hi, {{ session['name'] }}</span>
+            <a href="/logout">Logout</a>
+        {% else %}
+            <a href="/login">Login</a>
+        {% endif %}
+
+        <a href="/cart">Cart</a>
+        <a href="/wishlist">Wishlist</a>
+        <a href="/orders">Orders</a>
+
+        {% if session.get('seller_name') %}
+            <a href="/seller_dashboard">Seller Dashboard</a>
+        {% else %}
+            <a href="/seller_login">Seller</a>
+        {% endif %}
+
+        <a href="/admin">Admin</a>
+    </div>
+</nav>
+
+<section class="hero">
+    <div class="hero-content">
+        <h1>Big Shopping Sale</h1>
+        <p>Up to 70% OFF on Mobiles, Electronics, Fashion and more</p>
+        <a href="/products" class="hero-btn">Shop Now</a>
+    </div>
+</section>
+
+<section class="categories-section">
+    {% for category in categories %}
+    <a href="/products?category={{ category.category_name }}" class="category-box">
+        <img
+            src="{{ category.image }}"
+            alt="{{ category.category_name }}"
+            onerror="this.src='https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500';"
+        >
+        <h3>{{ category.category_name }}</h3>
+    </a>
+    {% endfor %}
+</section>
+
+<section class="offer-banner">
+    <div class="offer-content">
+        <h1>MEGA ELECTRONICS SALE</h1>
+        <p>Smartphones, Laptops, Accessories & More</p>
+        <h2>UP TO 80% OFF</h2>
+    </div>
+</section>
+
+<section class="main-products-layout">
+
+    <aside class="filter-sidebar">
+        <h2>Filters</h2>
+
+        <form action="/products" method="GET">
+            <input
+                type="text"
+                name="search"
+                placeholder="Search products"
+                value="{{ search if search else '' }}"
+            >
+
+            <h3>Category</h3>
+            <select name="category">
+                <option value="">All Categories</option>
+                {% for category in categories %}
+                <option value="{{ category.category_name }}">
+                    {{ category.category_name }}
+                </option>
+                {% endfor %}
+            </select>
+
+            <h3>Price</h3>
+            <select name="max_price">
+                <option value="">Any Price</option>
+                <option value="1000">Below ₹1000</option>
+                <option value="5000">Below ₹5000</option>
+                <option value="10000">Below ₹10000</option>
+                <option value="50000">Below ₹50000</option>
+            </select>
+
+            <h3>Sort By</h3>
+            <select name="sort">
+                <option value="">Default</option>
+                <option value="low_to_high">Price: Low to High</option>
+                <option value="high_to_low">Price: High to Low</option>
+                <option value="rating">Top Rated</option>
+            </select>
+
+            <button type="submit">Apply Filters</button>
+        </form>
+    </aside>
+
+    <div class="products-content">
+        <section class="products-section">
+            <h2>Featured Products</h2>
+
+            <div class="product-container">
+                {% for product in products %}
+
+                <div class="product-card">
+
+                    <a href="/product/{{ product.product_id }}">
+                        <img
+                            src="{{ product.image }}"
+                            alt="{{ product.product_name }}"
+                            onerror="this.src='https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500';"
+                        >
+                    </a>
+
+                    <div class="product-details">
+
+                        <a href="/product/{{ product.product_id }}" class="product-title-link">
+                            <h3>{{ product.product_name }}</h3>
+                        </a>
+
+                        <p class="description">{{ product.description }}</p>
+
+                        {% if product.discount and product.discount > 0 %}
+
+                        <div class="price-section">
+                            <h2 class="price">
+                                ₹{{ "%.2f"|format(product.price - (product.price * product.discount / 100)) }}
+                            </h2>
+
+                            <div class="discount-row">
+                                <span class="old-price">
+                                    ₹{{ product.price }}
+                                </span>
+
+                                <span class="discount-badge">
+                                    {{ product.discount }}% OFF
+                                </span>
+                            </div>
+                        </div>
+
+                        {% else %}
+
+                        <h2 class="price">
+                            ₹{{ product.price }}
+                        </h2>
+
+                        {% endif %}
+
+                        <div class="rating-row">
+                            <span class="rating-badge">
+                                {% if product.rating %}
+                                    ⭐ {{ "%.1f"|format(product.rating) }}
+                                {% else %}
+                                    ⭐ 0.0
+                                {% endif %}
+                            </span>
+                        </div>
+
+                        {% if session.get('user_id') %}
+                        <form method="POST"
+                              action="/add_quick_rating/{{ product.product_id }}"
+                              class="quick-rating-form">
+
+                            <select name="rating" required>
+                                <option value="">Rate</option>
+                                <option value="5">5⭐</option>
+                                <option value="4">4⭐</option>
+                                <option value="3">3⭐</option>
+                                <option value="2">2⭐</option>
+                                <option value="1">1⭐</option>
+                            </select>
+
+                            <button type="submit">Submit</button>
+                        </form>
+                        {% endif %}
+
+                        <p class="seller">Seller: {{ product.seller_name }}</p>
+                        <p class="stock">Stock: {{ product.stock_quantity }}</p>
+
+                        {% if product.stock_quantity <= 5 and product.stock_quantity > 0 %}
+                        <p style="color:red; font-weight:bold;">
+                            Hurry! Low Stock
+                        </p>
+                        {% endif %}
+
+                        <div class="buttons">
+                            {% if product.stock_quantity > 0 %}
+
+                            <a href="/add_to_cart/{{ product.product_id }}">
+                                <button class="cart-btn">Add to Cart</button>
+                            </a>
+
+                            <a href="/add_to_wishlist/{{ product.product_id }}">
+                                <button class="cart-btn">Wishlist</button>
+                            </a>
+
+                            <a href="/buy_now/{{ product.product_id }}">
+                                <button class="buy-btn">Buy Now</button>
+                            </a>
+
+                            {% else %}
+
+                            <button class="buy-btn" style="background:red;" disabled>
+                                Out Of Stock
+                            </button>
+
+                            {% endif %}
+                        </div>
+
+                    </div>
+                </div>
+
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+
+</section>
+
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-box">
+            <h3>About</h3>
+            <p>ShopEase is a modern ecommerce platform inspired by Amazon and Flipkart.</p>
+        </div>
+
+        <div class="footer-box">
+            <h3>Quick Links</h3>
+            <a href="/">Home</a>
+            <a href="/cart">Cart</a>
+            <a href="/wishlist">Wishlist</a>
+            <a href="/orders">Orders</a>
+        </div>
+
+        <div class="footer-box">
+            <h3>Customer Care</h3>
+            <p>Email: support@shopease.com</p>
+            <p>Phone: +91 9876543210</p>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        © 2026 ShopEase | DBMS Ecommerce Project
+    </div>
+</footer>
+
+<script>
+const searchInput = document.getElementById("searchInput");
+const suggestionsBox = document.getElementById("suggestionsBox");
+
+searchInput.addEventListener("keyup", async function () {
+    let query = searchInput.value.trim();
+
+    if(query.length < 1){
+        suggestionsBox.innerHTML = "";
+        return;
+    }
+
+    let response = await fetch(`/search_suggestions?q=${query}`);
+    let data = await response.json();
+
+    suggestionsBox.innerHTML = "";
+
+    data.forEach(item => {
+        let div = document.createElement("div");
+        div.className = "suggestion-item";
+        div.innerText = item.product_name;
+
+        div.onclick = function(){
+            searchInput.value = item.product_name;
+            suggestionsBox.innerHTML = "";
+            window.location.href = `/products?search=${item.product_name}`;
+        };
+
+        suggestionsBox.appendChild(div);
+    });
+});
+</script>
+
+</body>
+</html>

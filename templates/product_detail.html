@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ product.product_name }}</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="logo">
+        <a href="/">ShopEase</a>
+    </div>
+
+    <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/cart">Cart</a>
+        <a href="/wishlist">Wishlist</a>
+        <a href="/orders">Orders</a>
+    </div>
+</nav>
+
+<section class="product-detail-page">
+
+    <div class="product-image-section">
+        <img 
+            src="{{ product.image }}" 
+            alt="{{ product.product_name }}"
+            onerror="this.src='https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800';"
+        >
+    </div>
+
+    <div class="product-info-section">
+
+        <h1>{{ product.product_name }}</h1>
+
+        <p class="detail-rating">
+            ⭐ {{ product.rating }}
+        </p>
+
+       {% if product.discount and product.discount > 0 %}
+
+    <h2 class="detail-price">
+        ₹{{ "%.2f"|format(product.price - (product.price * product.discount / 100)) }}
+    </h2>
+
+    <p>
+        <span style="text-decoration: line-through; color:gray;">
+            ₹{{ product.price }}
+        </span>
+
+        <span class="detail-discount">
+            {{ product.discount }}% OFF
+        </span>
+    </p>
+
+{% else %}
+
+    <h2 class="detail-price">
+        ₹{{ product.price }}
+    </h2>
+
+{% endif %}
+
+        {% if product.discount %}
+        <p class="detail-discount">
+            {{ product.discount }}% OFF
+        </p>
+        {% endif %}
+
+        <p class="detail-description">
+            {{ product.description }}
+        </p>
+
+        <p class="detail-seller">
+            Seller: {{ product.seller_name }}
+        </p>
+
+        <p class="detail-stock">
+            Stock Available: {{ product.stock_quantity }}
+        </p>
+
+        {% if product.stock_quantity <= 5 and product.stock_quantity > 0 %}
+        <p style="color:red; font-weight:bold;">
+            Hurry! Only Few Items Left
+        </p>
+        {% endif %}
+
+        <div class="detail-buttons">
+
+            {% if product.stock_quantity > 0 %}
+
+            <a href="/add_to_cart/{{ product.product_id }}">
+                <button class="cart-btn">Add to Cart</button>
+            </a>
+
+            <a href="/buy_now/{{ product.product_id }}">
+                <button class="buy-btn">Buy Now</button>
+            </a>
+
+            <a href="/add_to_wishlist/{{ product.product_id }}">
+                <button class="cart-btn">Wishlist</button>
+            </a>
+
+            {% else %}
+
+            <button class="buy-btn" style="background:red;" disabled>
+                Out Of Stock
+            </button>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</section>
+
+<section class="review-section">
+
+    <h2>Customer Reviews</h2>
+
+    {% if session.get('user_id') %}
+
+    <form method="POST" action="/add_review/{{ product.product_id }}" class="review-form">
+
+        <select name="rating" required>
+            <option value="">Select Rating</option>
+            <option value="5">5 Star</option>
+            <option value="4">4 Star</option>
+            <option value="3">3 Star</option>
+            <option value="2">2 Star</option>
+            <option value="1">1 Star</option>
+        </select>
+
+        <textarea 
+            name="comment"
+            placeholder="Write your review"
+            required
+        ></textarea>
+
+        <button type="submit">
+            Submit Review
+        </button>
+
+    </form>
+
+    {% else %}
+
+    <p>
+        <a href="/login">Login</a> to write a review.
+    </p>
+
+    {% endif %}
+
+    {% if reviews %}
+
+        {% for review in reviews %}
+
+        <div class="review-card">
+
+            <h3>{{ review.name }}</h3>
+
+            <p class="review-rating">
+                ⭐ {{ review.rating }}
+            </p>
+
+            <p>
+                {{ review.comment }}
+            </p>
+
+        </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <p>No reviews yet.</p>
+
+    {% endif %}
+
+</section>
+
+</body>
+</html>

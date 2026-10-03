@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Buy Now - ShopEase</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+
+<nav class="navbar">
+    <div class="logo">
+        <a href="/">ShopEase</a>
+    </div>
+
+    <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/cart">Cart</a>
+        <a href="/orders">Orders</a>
+        <a href="/logout">Logout</a>
+    </div>
+</nav>
+
+<section class="products-section">
+
+    <h2>Buy Now</h2>
+
+    <div class="product-card">
+
+        <img
+            src="{{ product.image }}"
+            alt="{{ product.product_name }}"
+            style="width:300px;height:300px;object-fit:contain;"
+        >
+
+        <h2>{{ product.product_name }}</h2>
+
+        <p>{{ product.description }}</p>
+
+        {% if product.discount and product.discount > 0 %}
+
+            {% set discounted_price =
+                product.price - (product.price * product.discount / 100)
+            %}
+
+            <h2>
+                ₹{{ "%.2f"|format(discounted_price) }}
+            </h2>
+
+            <p>
+                <span style="text-decoration:line-through;color:gray;">
+                    ₹{{ "%.2f"|format(product.price) }}
+                </span>
+
+                <span style="color:green;font-weight:bold;">
+                    {{ product.discount }}% OFF
+                </span>
+            </p>
+
+        {% else %}
+
+            <h2>
+                ₹{{ "%.2f"|format(product.price) }}
+            </h2>
+
+        {% endif %}
+
+        <p>
+            Stock: {{ product.stock_quantity }}
+        </p>
+
+        {% if product.stock_quantity > 0 %}
+
+        <form method="POST"
+              action="/buy_now/{{ product.product_id }}">
+
+            <label>
+                Quantity:
+            </label>
+
+            <input
+                type="number"
+                name="quantity"
+                value="1"
+                min="1"
+                max="{{ product.stock_quantity }}"
+                required
+            >
+
+            <br><br>
+
+            <button type="submit" class="buy-btn">
+                Buy Now
+            </button>
+
+        </form>
+
+        {% else %}
+
+            <button disabled
+                    style="background:red;">
+                Out Of Stock
+            </button>
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+</body>
+</html>

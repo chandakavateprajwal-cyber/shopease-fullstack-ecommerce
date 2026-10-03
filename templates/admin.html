@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="logo">
+        <a href="/">ShopEase Admin</a>
+    </div>
+
+    <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/admin/users">Manage Users</a>
+        <a href="/admin/orders">Manage Orders</a>
+        <a href="/admin/sellers">Manage Sellers</a>
+        <a href="/orders">My Orders</a>
+        <a href="/logout">Logout</a>
+    </div>
+</nav>
+
+<section class="products-section">
+    <h2>Admin Dashboard</h2>
+
+    <div class="admin-grid">
+        <div class="order-card">
+            <h3>Total Users</h3>
+            <h1>{{ users_count }}</h1>
+        </div>
+
+        <div class="order-card">
+            <h3>Total Products</h3>
+            <h1>{{ products_count }}</h1>
+        </div>
+
+        <div class="order-card">
+            <h3>Total Orders</h3>
+            <h1>{{ orders_count }}</h1>
+        </div>
+
+        <div class="order-card">
+            <h3>Total Sales</h3>
+            <h1>₹{{ total_sales }}</h1>
+        </div>
+    </div>
+
+    <h2 style="margin-top:40px;">Dashboard Analytics</h2>
+    <div class="chart-box">
+        <canvas id="adminChart"></canvas>
+    </div>
+
+    <h2 style="margin-top:40px;">Category Distribution</h2>
+    <div class="chart-box">
+        <canvas id="categoryChart"></canvas>
+    </div>
+
+    <h2 style="margin-top:30px;">Add Category</h2>
+
+    <form method="POST" action="/add_category" class="auth-form admin-form">
+        <input type="text" name="category_name" placeholder="Enter Category Name" required>
+        <input type="text" name="image" placeholder="Enter Category Image URL" required>
+        <button type="submit">Add Category</button>
+    </form>
+
+    <h2 style="margin-top:40px;">Manage Categories</h2>
+
+    <div class="product-container">
+        {% for category in categories %}
+        <div class="product-card">
+            <img src="{{ category.image }}" alt="{{ category.category_name }}">
+
+            <div class="product-details">
+                <h3>{{ category.category_name }}</h3>
+
+                <div class="buttons">
+                    <a href="/edit_category/{{ category.category_id }}">
+                        <button class="cart-btn">Edit Category</button>
+                    </a>
+
+                    <a href="/delete_category/{{ category.category_id }}">
+                        <button class="buy-btn">Delete Category</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <h2 style="margin-top:30px;">Add Product</h2>
+
+    <form method="POST" action="/admin/add_product" class="auth-form admin-form">
+        <input type="text" name="product_name" placeholder="Product Name" required>
+        <input type="text" name="description" placeholder="Description" required>
+        <input type="number" name="price" placeholder="Price" required>
+        <input type="text" name="image" placeholder="Online Product Image URL" required>
+        <input type="number" name="discount" placeholder="Discount %" required>
+        <input type="number" name="stock_quantity" placeholder="Stock Quantity" required>
+
+        <select name="category_id" required>
+            <option value="">Select Category</option>
+            {% for category in categories %}
+                <option value="{{ category.category_id }}">
+                    {{ category.category_name }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <select name="seller_id" required>
+            <option value="">Select Seller</option>
+            {% for seller in sellers %}
+                <option value="{{ seller.seller_id }}">
+                    {{ seller.seller_name }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <button type="submit">Add Product</button>
+    </form>
+
+    <h2 style="margin-top:40px;">Manage Products</h2>
+
+    <div class="product-container">
+        {% for product in products %}
+        <div class="product-card">
+            <img src="{{ product.image }}" alt="{{ product.product_name }}">
+
+            <div class="product-details">
+                <h3>{{ product.product_name }}</h3>
+                <h2 class="price">₹{{ product.price }}</h2>
+
+                <p>Stock: {{ product.stock_quantity }}</p>
+
+                {% if product.stock_quantity <= 5 %}
+                    <p style="color:red; font-weight:bold;">
+                        Low Stock Warning
+                    </p>
+                {% endif %}
+
+                <div class="buttons">
+                    <a href="/edit_product/{{ product.product_id }}">
+                        <button class="cart-btn">Edit Product</button>
+                    </a>
+
+                    <a href="/delete_product/{{ product.product_id }}">
+                        <button class="buy-btn">Delete Product</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+const adminCtx = document.getElementById('adminChart');
+
+new Chart(adminCtx, {
+    type: 'bar',
+    data: {
+        labels: ['Users', 'Products', 'Orders'],
+        datasets: [{
+            label: 'ShopEase Analytics',
+            data: [{{ users_count }}, {{ products_count }}, {{ orders_count }}],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+const categoryCtx = document.getElementById('categoryChart');
+
+new Chart(categoryCtx, {
+    type: 'pie',
+    data: {
+        labels: [
+            {% for category in categories %}
+                "{{ category.category_name }}",
+            {% endfor %}
+        ],
+        datasets: [{
+            label: 'Categories',
+            data: [
+                {% for category in categories %}
+                    1,
+                {% endfor %}
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true
+    }
+});
+</script>
+
+</body>
+</html>

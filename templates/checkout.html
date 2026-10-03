@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Checkout</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="logo">
+        <a href="/">ShopEase</a>
+    </div>
+
+    <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/cart">Cart</a>
+        <a href="/orders">Orders</a>
+    </div>
+</nav>
+
+<section class="checkout-page">
+
+    <div class="checkout-card">
+
+        <h2>Checkout</h2>
+
+        <div class="checkout-summary">
+            <h3>Order Summary</h3>
+            <p>Total Amount</p>
+            <h1>₹{{ total }}</h1>
+        </div>
+
+        <form method="POST">
+
+            <label>Delivery Address</label>
+            <textarea 
+                name="address"
+                placeholder="Enter full delivery address"
+                required
+            ></textarea>
+
+            <label>Payment Method</label>
+            <select name="payment_method" required>
+                <option value="">Select Payment Method</option>
+                <option value="Cash on Delivery">Cash on Delivery</option>
+                <option value="UPI">UPI</option>
+                <option value="Debit Card">Debit Card</option>
+                <option value="Credit Card">Credit Card</option>
+            </select>
+
+            <button type="submit" class="place-order-btn">
+                Place Order
+            </button>
+
+        </form>
+
+    </div>
+
+</section>
+
+</body>
+</html>

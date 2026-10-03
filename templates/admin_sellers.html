@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manage Sellers</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<nav class="navbar">
+
+    <div class="logo">
+        <a href="/admin">ShopEase Admin</a>
+    </div>
+
+    <div class="nav-links">
+        <a href="/admin">Dashboard</a>
+        <a href="/admin/users">Users</a>
+        <a href="/admin/sellers">Sellers</a>
+        <a href="/">Home</a>
+    </div>
+
+</nav>
+
+<section class="products-section">
+
+    <h2>Manage Sellers</h2>
+
+    <div class="order-card">
+
+        <table class="admin-table">
+
+            <tr>
+                <th>Seller ID</th>
+                <th>Seller Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Action</th>
+            </tr>
+
+            {% for seller in sellers %}
+
+            <tr>
+                <td>{{ seller.seller_id }}</td>
+                <td>{{ seller.seller_name }}</td>
+                <td>{{ seller.email }}</td>
+                <td>{{ seller.phone }}</td>
+
+                <td>
+                    <a href="/delete_seller/{{ seller.seller_id }}">
+                        <button class="buy-btn">
+                            Delete
+                        </button>
+                    </a>
+                </td>
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+    </div>
+
+</section>
+
+</body>
+</html>

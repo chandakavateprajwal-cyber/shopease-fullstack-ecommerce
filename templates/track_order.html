@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Track Order</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="logo">
+        <a href="/">ShopEase</a>
+    </div>
+
+    <div class="nav-links">
+        <a href="/orders">Back to Orders</a>
+        <a href="/">Home</a>
+        <a href="/logout">Logout</a>
+    </div>
+</nav>
+
+<section class="products-section">
+    <h2>Order Tracking</h2>
+
+    <div class="order-card">
+        {% if tracking %}
+            {% for item in tracking %}
+                <div class="tracking-step">
+                    <h3>{{ item.tracking_status }}</h3>
+                    <p>{{ item.tracking_date }}</p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <h3>No tracking updates found</h3>
+        {% endif %}
+    </div>
+</section>
+
+</body>
+</html>

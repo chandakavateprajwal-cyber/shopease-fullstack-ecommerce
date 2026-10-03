@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Wishlist</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="logo">
+        <a href="/">ShopEase</a>
+    </div>
+
+    <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/cart">Cart</a>
+        <a href="/orders">Orders</a>
+        <a href="/logout">Logout</a>
+    </div>
+</nav>
+
+<section class="products-section">
+    <h2>My Wishlist</h2>
+
+    {% if items %}
+        <div class="wishlist-container">
+            {% for item in items %}
+            <div class="product-card">
+                <a href="/product/{{ item.product_id }}">
+                    <img src="{{ item.image }}" alt="{{ item.product_name }}">
+                </a>
+
+               <div class="wishlist-card">
+                    <h3>{{ item.product_name }}</h3>
+
+                    <h2 class="price">₹{{ item.price }}</h2>
+
+                    <p class="rating">⭐ {{ item.rating }}</p>
+
+                    <p class="discount">{{ item.discount }}% OFF</p>
+
+                    <div class="buttons">
+                        <a href="/add_to_cart/{{ item.product_id }}">
+                            <button class="cart-btn">Add to Cart</button>
+                        </a>
+
+                        <a href="/remove_wishlist/{{ item.wishlist_id }}">
+                            <button class="buy-btn">Remove</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <h2 class="empty-cart">Your wishlist is empty</h2>
+        <br>
+        <a href="/">
+            <button class="cart-btn" style="width:200px;">Continue Shopping</button>
+        </a>
+    {% endif %}
+</section>
+
+</body>
+</html>

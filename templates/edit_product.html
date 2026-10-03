@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Product</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="logo">
+        <a href="/admin">ShopEase Admin</a>
+    </div>
+
+    <div class="nav-links">
+        <a href="/admin">Back to Admin</a>
+        <a href="/">Home</a>
+    </div>
+</nav>
+
+<div class="auth-container">
+    <form method="POST" class="auth-form">
+        <h2>Edit Product</h2>
+
+        <input type="text" name="product_name" value="{{ product.product_name }}" required>
+
+        <input type="text" name="description" value="{{ product.description }}" required>
+
+        <input type="number" name="price" value="{{ product.price }}" required>
+
+        <input type="text" name="image" value="{{ product.image }}" required>
+
+        <input type="number" name="discount" value="{{ product.discount }}" required>
+
+        <input type="number" name="stock_quantity" value="{{ product.stock_quantity }}" required>
+
+        <button type="submit">Update Product</button>
+    </form>
+</div>
+
+</body>
+</html>

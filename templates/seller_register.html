@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Seller Register</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<div class="auth-container">
+
+    <form method="POST" class="auth-form">
+
+        <h2>Become a Seller</h2>
+
+        <input type="text" 
+               name="seller_name"
+               placeholder="Seller Name"
+               required>
+
+        <input type="email"
+               name="email"
+               placeholder="Business Email"
+               required>
+
+        <input type="text"
+               name="phone"
+               placeholder="Phone Number"
+               required>
+
+        <button type="submit">
+            Register Seller
+        </button>
+
+        <p>
+            Already Seller?
+           {% if session.get('seller_name') %}
+
+    <span class="welcome-text">
+        Seller: {{ session['seller_name'] }}
+    </span>
+
+    <a href="/seller_dashboard">
+        Dashboard
+    </a>
+
+{% else %}
+
+    <a href="/seller_login">
+        Seller
+    </a>
+
+{% endif %}
+        </p>
+
+    </form>
+
+</div>
+
+</body>
+</html>

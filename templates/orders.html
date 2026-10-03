@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Orders</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="logo">
+        <a href="/">ShopEase</a>
+    </div>
+
+    <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/cart">Cart</a>
+        <a href="/wishlist">Wishlist</a>
+        <a href="/logout">Logout</a>
+    </div>
+</nav>
+
+<section class="products-section">
+
+    <h2>My Orders</h2>
+
+    {% if orders %}
+
+        {% for order in orders %}
+
+        <div class="order-card order-flex">
+
+            <div class="order-image">
+                <img 
+                    src="{{ order.image }}"
+                    alt="{{ order.product_name }}"
+                    onerror="this.src='https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500';"
+                >
+            </div>
+
+            <div class="order-details">
+
+                <h3>Order ID: {{ order.order_id }}</h3>
+
+                <h3>{{ order.product_name }}</h3>
+
+                <p>Total Amount: ₹{{ order.total_amount }}</p>
+                <p>Status: {{ order.status }}</p>
+                <p>Date: {{ order.order_date }}</p>
+
+                <p>
+                    Payment:
+                    {{ order.payment_method }} - {{ order.payment_status }}
+                </p>
+
+                <p>Tracking: {{ order.tracking_status }}</p>
+
+                <div class="buttons">
+
+                    <a href="/track_order/{{ order.order_id }}">
+                        <button class="cart-btn">
+                            Track Order
+                        </button>
+                    </a>
+
+                    {% if order.status == "Placed" or order.status == "Packed" %}
+
+                    <a href="/cancel_order/{{ order.order_id }}">
+                        <button class="buy-btn" style="background:red;">
+                            Cancel Order
+                        </button>
+                    </a>
+
+                    {% elif order.status == "Cancelled" %}
+
+                    <button class="buy-btn"
+                            style="background:gray; cursor:not-allowed;"
+                            disabled>
+                        Order Cancelled
+                    </button>
+
+                    <a href="/delete_order/{{ order.order_id }}">
+                        <button class="buy-btn" style="background:black;">
+                            Delete Order
+                        </button>
+                    </a>
+
+                    {% elif order.status == "Delivered" %}
+
+                    <button class="buy-btn"
+                            style="background:green; cursor:not-allowed;"
+                            disabled>
+                        Delivered
+                    </button>
+
+                    <a href="/delete_order/{{ order.order_id }}">
+                        <button class="buy-btn" style="background:black;">
+                            Delete Order
+                        </button>
+                    </a>
+
+                    {% endif %}
+
+                </div>
+
+                {% if order.status == "Cancelled" %}
+
+                    {% if order.payment_method == "UPI" or order.payment_method == "Debit Card" or order.payment_method == "Credit Card" %}
+
+                        <p style="color:green; font-weight:bold; margin-top:12px;">
+                            Refund will be credited to your original payment method within 24-48 hours.
+                        </p>
+
+                    {% elif order.payment_method == "Cash on Delivery" %}
+
+                        <p style="color:#555; font-weight:bold; margin-top:12px;">
+                            No refund required because payment method was Cash on Delivery.
+                        </p>
+
+                    {% endif %}
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <h2>No orders found</h2>
+
+    {% endif %}
+
+</section>
+
+</body>
+</html>
